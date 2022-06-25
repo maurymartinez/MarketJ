@@ -1,0 +1,11 @@
+server:
+  port: 8080
+
+  data:
+    mongodb:
+      host: ${CE_API_MONGO_HOST:localhost}
+      port: ${CE_API_MONGO_PORT:27017}
+      authentication-database: admin
+      database: ${CE_API_MONGO_DATABASE:APITests}
+      username: ${CE_API_MONGO_USER:api}
+      password: ${CE_API_MONGO_PASSWORD:api}
