@@ -11,10 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
@@ -63,7 +60,7 @@ public class ProductRepositoryTest {
     void findAllWithSearchFieldTypeIsType4MustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldSearch = new ArrayList<FieldSearch>();
-        fieldSearch.add(new FieldSearch("type", "type4"));
+        fieldSearch.add(from("type", "type4"));
         pageSearch.setFields(fieldSearch);
         pageSearch.setSize(45);
 
@@ -76,7 +73,7 @@ public class ProductRepositoryTest {
     void findAllWithSearchFieldTypeIsNotType4MustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldsSearch = new ArrayList<FieldSearch>();
-        var fieldSearch = new FieldSearch("type", "type4");
+        var fieldSearch = from("type", "type4");
         fieldSearch.setOperation(FieldSearch.SearchOperation.NOT_EQUAL);
         fieldsSearch.add(fieldSearch);
         pageSearch.setFields(fieldsSearch);
@@ -91,7 +88,7 @@ public class ProductRepositoryTest {
     void findAllWithSearchFieldNameIsName3MustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldSearch = new ArrayList<FieldSearch>();
-        fieldSearch.add(new FieldSearch("name", "name3"));
+        fieldSearch.add(from("name", "name3"));
         pageSearch.setFields(fieldSearch);
         pageSearch.setSize(45);
 
@@ -104,7 +101,7 @@ public class ProductRepositoryTest {
     void findAllWithSearchFieldNameIsNotName3MustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldsSearch = new ArrayList<FieldSearch>();
-        var fieldSearch = new FieldSearch("name", "name3");
+        var fieldSearch = from("name", "name3");
         fieldSearch.setOperation(FieldSearch.SearchOperation.NOT_EQUAL);
         fieldsSearch.add(fieldSearch);
         pageSearch.setFields(fieldsSearch);
@@ -119,7 +116,7 @@ public class ProductRepositoryTest {
     void findAllWithSearchFieldPriceGTEMustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldsSearch = new ArrayList<FieldSearch>();
-        var fieldSearch = new FieldSearch("price", "24");
+        var fieldSearch = from("price", "24");
         fieldSearch.setOperation(FieldSearch.SearchOperation.GREATER_THAN_EQUAL);
         fieldSearch.setType(FieldSearch.FieldType.NUMBER);
         fieldsSearch.add(fieldSearch);
@@ -135,7 +132,7 @@ public class ProductRepositoryTest {
     void findAllWithSearchFieldPriceLTEMustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldsSearch = new ArrayList<FieldSearch>();
-        var fieldSearch = new FieldSearch("price", "25");
+        var fieldSearch = from("price", "25");
         fieldSearch.setOperation(FieldSearch.SearchOperation.LESS_THAN_EQUAL);
         fieldSearch.setType(FieldSearch.FieldType.NUMBER);
         fieldsSearch.add(fieldSearch);
@@ -151,7 +148,7 @@ public class ProductRepositoryTest {
     void findAllWithSearchFieldIsSoldMustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldsSearch = new ArrayList<FieldSearch>();
-        var fieldSearch = new FieldSearch("sold", "true");
+        var fieldSearch = from("sold", "true");
         fieldSearch.setType(FieldSearch.FieldType.BOOLEAN);
         fieldsSearch.add(fieldSearch);
         pageSearch.setFields(fieldsSearch);
@@ -166,7 +163,7 @@ public class ProductRepositoryTest {
     void findAllWithSearchFieldIsNoSoldMustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldsSearch = new ArrayList<FieldSearch>();
-        var fieldSearch = new FieldSearch("sold", "true");
+        var fieldSearch = from("sold", "true");
         fieldSearch.setType(FieldSearch.FieldType.BOOLEAN);
         fieldSearch.setOperation(FieldSearch.SearchOperation.NOT_EQUAL);
         fieldsSearch.add(fieldSearch);
@@ -182,7 +179,7 @@ public class ProductRepositoryTest {
     void findAllWithSearchFieldTagContainRedMustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldsSearch = new ArrayList<FieldSearch>();
-        var fieldSearch = new FieldSearch("tags", "red");
+        var fieldSearch = from("tags", "red");
         fieldSearch.setType(FieldSearch.FieldType.LIST);
         fieldSearch.setOperation(FieldSearch.SearchOperation.CONTAINS);
         fieldsSearch.add(fieldSearch);
@@ -198,7 +195,7 @@ public class ProductRepositoryTest {
     void findAllWithSearchFieldTagNoContainRedMustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldsSearch = new ArrayList<FieldSearch>();
-        var fieldSearch = new FieldSearch("tags", "red");
+        var fieldSearch = from("tags", "red");
         fieldSearch.setType(FieldSearch.FieldType.LIST);
         fieldSearch.setOperation(FieldSearch.SearchOperation.DOES_NOT_CONTAIN);
         fieldsSearch.add(fieldSearch);
@@ -214,7 +211,7 @@ public class ProductRepositoryTest {
     void findAllWithSearchFieldSortedByNameAscMustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldSearch = new ArrayList<FieldSearch>();
-        fieldSearch.add(new FieldSearch("name"));
+        fieldSearch.add(from("name"));
         pageSearch.setFields(fieldSearch);
         pageSearch.setSize(45);
 
@@ -228,7 +225,7 @@ public class ProductRepositoryTest {
     void findAllWithSearchFieldSortedByNameDescMustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldSearch = new ArrayList<FieldSearch>();
-        var field = new FieldSearch("name");
+        var field = from("name");
         field.setSort(Sort.Direction.DESC);
         fieldSearch.add(field);
         pageSearch.setFields(fieldSearch);
@@ -244,7 +241,7 @@ public class ProductRepositoryTest {
     void findAllWithSearchFieldSortedByTypeAscMustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldSearch = new ArrayList<FieldSearch>();
-        fieldSearch.add(new FieldSearch("type"));
+        fieldSearch.add(from("type"));
         pageSearch.setFields(fieldSearch);
         pageSearch.setSize(45);
 
@@ -258,7 +255,7 @@ public class ProductRepositoryTest {
     void findAllWithSearchFieldSortedByTypeDescMustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldSearch = new ArrayList<FieldSearch>();
-        var field = new FieldSearch("type");
+        var field = from("type");
         field.setSort(Sort.Direction.DESC);
         fieldSearch.add(field);
         pageSearch.setFields(fieldSearch);
@@ -274,7 +271,7 @@ public class ProductRepositoryTest {
     void findAllWithSearchFieldSortedByPriceAscMustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldSearch = new ArrayList<FieldSearch>();
-        fieldSearch.add(new FieldSearch("price"));
+        fieldSearch.add(from("price"));
         pageSearch.setFields(fieldSearch);
         pageSearch.setSize(45);
 
@@ -288,7 +285,7 @@ public class ProductRepositoryTest {
     void findAllWithSearchFieldSortedByPriceDescMustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldSearch = new ArrayList<FieldSearch>();
-        var field = new FieldSearch("price");
+        var field = from("price");
         field.setSort(Sort.Direction.DESC);
         fieldSearch.add(field);
         pageSearch.setFields(fieldSearch);
@@ -304,7 +301,7 @@ public class ProductRepositoryTest {
     void findAllWithSearchFieldSortedBySoldAscMustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldSearch = new ArrayList<FieldSearch>();
-        fieldSearch.add(new FieldSearch("sold"));
+        fieldSearch.add(from("sold"));
         pageSearch.setFields(fieldSearch);
         pageSearch.setSize(45);
 
@@ -318,7 +315,7 @@ public class ProductRepositoryTest {
     void findAllWithSearchFieldSSortedBySoldDescMustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldSearch = new ArrayList<FieldSearch>();
-        var field = new FieldSearch("sold");
+        var field = from("sold");
         field.setSort(Sort.Direction.DESC);
         fieldSearch.add(field);
         pageSearch.setFields(fieldSearch);
@@ -345,6 +342,19 @@ public class ProductRepositoryTest {
         IntStream.range(1, amount + 1)
                 .mapToObj(i -> new Product(UUID.randomUUID().toString(), "name" + i, "type" + i % 5, tagsGenerator.apply(i), 23.0 + i % 5, i % 2 == 0))
                 .forEach(repository::saveOrUpdate);
+    }
+
+    private FieldSearch from(String name, String value) {
+        var field = new FieldSearch();
+        field.setName(name);
+        field.setValue(value);
+        return field;
+    }
+
+    private FieldSearch from(String name) {
+        var field = new FieldSearch();
+        field.setName(name);
+        return field;
     }
 
 }
