@@ -1,9 +1,11 @@
 package com.market.core.domain.search;
 
+import ch.qos.logback.core.CoreConstants;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.Sort;
 
 import java.lang.reflect.InvocationTargetException;
@@ -20,25 +22,16 @@ import static java.util.Arrays.stream;
 @AllArgsConstructor
 public class FieldSearch {
     private String name;
-    private Optional<String> value = Optional.empty();
+    private String value = CoreConstants.EMPTY_STRING;
     private Sort.Direction sort = Sort.Direction.ASC;
     private SearchOperation operation = SearchOperation.EQUAL;
     private FieldType type = FieldType.TEXT;
 
-    public FieldSearch(String name) {
-        this.name = name;
-    }
-
-    public FieldSearch(String name, String value) {
-        this.name = name;
-        this.value = Optional.ofNullable(value);
-    }
-
-    public Optional<?> getConvertedValue() {
+    public Optional<?> convertedValue() {
         try {
-            if (value.isPresent())
-                return Optional.of(type.convertValue(value.get()));
-            return value;
+            if (Strings.isNotBlank(value))
+                return Optional.of(type.convertValue(value));
+            return Optional.empty();
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
                  IllegalAccessException e) {
             throw new RuntimeException(e);

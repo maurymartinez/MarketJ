@@ -48,17 +48,17 @@ public class MongoProductRepositoryImp implements ProductRepository {
         var query = new Criteria();
 
         for (FieldSearch field : search.getFields())
-            if (field.getConvertedValue().isPresent())
+            if (field.convertedValue().isPresent())
                 switch (field.getOperation()) {
-                    case NOT_EQUAL -> query.and(field.getName()).ne(field.getConvertedValue().get());
-                    case CONTAINS -> query.and(field.getName()).all((Collection<?>) field.getConvertedValue().get());
+                    case NOT_EQUAL -> query.and(field.getName()).ne(field.convertedValue().get());
+                    case CONTAINS -> query.and(field.getName()).all((Collection<?>) field.convertedValue().get());
                     case DOES_NOT_CONTAIN ->
-                            query.and(field.getName()).not().in((Collection<?>) field.getConvertedValue().get());
-                    case GREATER_THAN -> query.and(field.getName()).gt(field.getConvertedValue().get());
-                    case GREATER_THAN_EQUAL -> query.and(field.getName()).gte(field.getConvertedValue().get());
-                    case LESS_THAN -> query.and(field.getName()).lt(field.getConvertedValue().get());
-                    case LESS_THAN_EQUAL -> query.and(field.getName()).lte(field.getConvertedValue().get());
-                    default -> query.and(field.getName()).is(field.getConvertedValue().get());
+                            query.and(field.getName()).not().in((Collection<?>) field.convertedValue().get());
+                    case GREATER_THAN -> query.and(field.getName()).gt(field.convertedValue().get());
+                    case GREATER_THAN_EQUAL -> query.and(field.getName()).gte(field.convertedValue().get());
+                    case LESS_THAN -> query.and(field.getName()).lt(field.convertedValue().get());
+                    case LESS_THAN_EQUAL -> query.and(field.getName()).lte(field.convertedValue().get());
+                    default -> query.and(field.getName()).is(field.convertedValue().get());
                 }
 
         operations.add(match(query));
