@@ -1,5 +1,6 @@
 package com.market.store.domain;
 
+import com.market.core.domain.search.PageSearch;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -75,5 +76,12 @@ class StoreTest {
         store.addProduct(product);
 
         verify(productRepository, times(1)).saveOrUpdate(any());
+    }
+
+    @Test
+    void findProducts() {
+        store.findProducts(new PageSearch());
+
+        verify(productRepository, times(1)).findAll(any());
     }
 }
