@@ -20,8 +20,8 @@ public class Product extends EntityBaseInformation {
     private String serial;
     private String name;
 
-    private String Type;
-    private Collection<String> Tags;
+    private String type;
+    private Collection<String> tags;
     private double price;
-    private boolean sell;
+    private boolean sold;
 }
