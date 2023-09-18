@@ -118,7 +118,7 @@ class StoreTest {
 
         assertThatThrownBy(() -> store.sellProduct(product.getId()))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage("This product has already been sold.");
+                .hasMessage(String.format("Product %s has already been sold.", product.getId()));
     }
 
     @Test
