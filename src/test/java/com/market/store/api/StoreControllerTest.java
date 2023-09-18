@@ -67,7 +67,7 @@ class StoreControllerTest {
 
         when(store.addProduct(any(Product.class))).thenReturn(productDTO.toEntity());
 
-        var responseContent = mvc.perform(post("/v1/store/product")
+        var responseContent = mvc.perform(post("/v1/store/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(getJsonValueOf(productDTO)))
                 .andExpect(status().isBadRequest())
@@ -86,7 +86,7 @@ class StoreControllerTest {
 
         when(store.addProduct(any(Product.class))).thenReturn(productDTO.toEntity());
 
-        var responseContent = mvc.perform(post("/v1/store/product")
+        var responseContent = mvc.perform(post("/v1/store/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(getJsonValueOf(productDTO)))
                 .andExpect(status().isBadRequest())
@@ -105,7 +105,7 @@ class StoreControllerTest {
 
         when(store.addProduct(any(Product.class))).thenReturn(productDTO.toEntity());
 
-        var responseContent = mvc.perform(post("/v1/store/product")
+        var responseContent = mvc.perform(post("/v1/store/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(getJsonValueOf(productDTO)))
                 .andExpect(status().isBadRequest())
@@ -130,7 +130,7 @@ class StoreControllerTest {
 
         var page = new PageSearch(3, 30, List.of(nameField, typeField));
 
-        mvc.perform(post("/v1/store/product/search")
+        mvc.perform(post("/v1/store/products/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.getJsonValueOf(page)))
                 .andExpect(status().isOk());
@@ -156,7 +156,7 @@ class StoreControllerTest {
     void whenGETFindProductsWithNoParametersThen200() throws Exception {
         when(store.findProducts(any(PageSearch.class))).thenReturn(new ArrayList<>());
 
-        mvc.perform(post("/v1/store/product/search")
+        mvc.perform(post("/v1/store/products/search")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
