@@ -20,6 +20,7 @@ public class StoreController {
 
     private final Store store;
 
+    @ApiOperation(value = "Save Product", produces = MediaType.APPLICATION_JSON_VALUE)
     @PostMapping("/product")
     public ResponseEntity<ProductDTO> addProduct(@Valid @RequestBody ProductDTO productDTO) {
 
