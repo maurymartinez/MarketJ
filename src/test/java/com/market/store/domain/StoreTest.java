@@ -92,6 +92,7 @@ class StoreTest {
     @Test
     void SellProduct() {
         var product = new Product();
+        product.setId(UUID.randomUUID().toString());
         product.setSerial("123");
         product.setName("Product");
 
@@ -107,6 +108,7 @@ class StoreTest {
     @Test
     void SellSoldProduct() {
         var product = new Product();
+        product.setId(UUID.randomUUID().toString());
         product.setSerial("123");
         product.setName("Product");
         product.setSold(true);
