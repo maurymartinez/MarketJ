@@ -140,6 +140,6 @@ class StoreTest {
         var id = UUID.randomUUID().toString();
         assertThatThrownBy(() -> store.sellProduct(id))
                 .isInstanceOf(EntityNotFoundException.class)
-                .hasMessage(String.format("Product %s not exist.", id));
+                .hasMessage(String.format("Product %s not found.", id));
     }
 }
