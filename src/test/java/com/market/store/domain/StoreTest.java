@@ -97,6 +97,7 @@ class StoreTest {
         product.setName("Product");
 
         when(productRepository.getProductById(eq(product.getId()))).thenReturn(Optional.of(product));
+        when(productRepository.saveOrUpdate(eq(product))).thenReturn(product);
 
         var productSold = store.sellProduct(product.getId());
 
