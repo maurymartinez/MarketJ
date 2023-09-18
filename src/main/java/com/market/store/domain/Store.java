@@ -1,5 +1,6 @@
 package com.market.store.domain;
 
+import com.market.core.domain.EntityNotFoundException;
 import com.market.core.domain.search.PageSearch;
 import com.market.core.util.Asserts;
 import lombok.NonNull;
@@ -26,8 +27,17 @@ public class Store {
         return productRepository.findAll(search).stream().toList();
     }
 
-    public Product sellProduct(String id) {
-        throw new IllegalStateException("no implemented yet");
+    public Product sellProduct(String productId) {
+        Asserts.assertNonNullOrEmpty(productId, "ProductId cant be null or blank.");
+
+        var product = productRepository.getProductById(productId);
+
+        if (product.isPresent()) {
+            product.get().setSold(Boolean.TRUE);
+            return productRepository.saveOrUpdate(product.get());
+        }
+
+        throw new EntityNotFoundException(String.format("Product %s not exist.", productId));
     }
 
 }
