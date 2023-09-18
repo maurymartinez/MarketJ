@@ -23,7 +23,7 @@ public class SwaggerConfiguration {
                 .apiInfo(apiInfo)
                 .select()
                 .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any())
+                .paths(PathSelectors.ant("/v1/**"))
                 .build();
     }
 }
