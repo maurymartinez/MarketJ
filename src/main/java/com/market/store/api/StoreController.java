@@ -39,4 +39,12 @@ public class StoreController {
 
         return ResponseEntity.ok(products);
     }
+
+    @ApiOperation(value = "Sell Product", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/products/{id}/sell")
+    public ResponseEntity<ProductDTO> sellProduct(@PathVariable("id") String productId) {
+        var productSold = store.sellProduct(productId);
+
+        return ResponseEntity.ok(ProductDTO.from(productSold));
+    }
 }
