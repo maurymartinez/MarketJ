@@ -19,6 +19,7 @@ public class SwaggerConfiguration {
                 .build();
 
         return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("v1")
                 .apiInfo(apiInfo)
                 .select()
                 .apis(RequestHandlerSelectors.any())
