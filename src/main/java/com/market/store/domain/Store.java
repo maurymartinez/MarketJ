@@ -33,6 +33,8 @@ public class Store {
         var product = productRepository.getProductById(productId);
 
         if (product.isPresent()) {
+            Asserts.assertIfNot(product.get().isSold(), String.format("Product %s has already been sold.", productId));
+
             product.get().setSold(Boolean.TRUE);
             return productRepository.saveOrUpdate(product.get());
         }
