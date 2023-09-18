@@ -29,6 +29,7 @@ public class StoreController {
         return ResponseEntity.ok(ProductDTO.from(storedProduct));
     }
 
+    @ApiOperation(value = "Search Product", produces = MediaType.APPLICATION_JSON_VALUE)
     @PostMapping("/product/search")
     public ResponseEntity<List<ProductDTO>> getProduct(@RequestBody(required = false) PageSearch search) {
         if (Objects.isNull(search))
