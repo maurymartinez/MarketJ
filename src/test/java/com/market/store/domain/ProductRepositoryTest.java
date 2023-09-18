@@ -176,7 +176,7 @@ public class ProductRepositoryTest {
     }
 
     @Test
-    void findAllWithSearchFieldTagContainRedMustReturnWantedProducts() {
+    void findAllWithSearchFieldTagContainListRedMustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldsSearch = new ArrayList<FieldSearch>();
         var fieldSearch = from("tags", "red");
