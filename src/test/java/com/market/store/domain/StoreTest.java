@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class StoreTest {
@@ -83,5 +85,48 @@ class StoreTest {
         store.findProducts(new PageSearch());
 
         verify(productRepository, times(1)).findAll(any());
+    }
+
+    @Test
+    void SellProduct() {
+        var product = new Product();
+        product.setSerial("123");
+        product.setName("Product");
+
+        when(productRepository.getProductById(eq(product.getId()))).thenReturn(Optional.of(product));
+
+        var productSold = store.sellProduct(product.getId());
+
+        verify(productRepository, times(1)).saveOrUpdate(argThat(Product::isSold));
+
+        assertThat(productSold.isSold()).isTrue();
+    }
+
+    @Test
+    void SellSoldProduct() {
+        var product = new Product();
+        product.setSerial("123");
+        product.setName("Product");
+        product.setSold(true);
+
+        when(productRepository.getProductById(eq(product.getId()))).thenReturn(Optional.of(product));
+
+        assertThatThrownBy(() -> store.sellProduct(product.getId()))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("This product has already been sold.");
+    }
+
+    @Test
+    void SellProductWithNullId() {
+        assertThatThrownBy(() -> store.sellProduct(null))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("ProductId cant be null or blank.");
+    }
+
+    @Test
+    void SellProductWithBlankId() {
+        assertThatThrownBy(() -> store.sellProduct(""))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("ProductId cant be null or blank.");
     }
 }
