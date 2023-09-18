@@ -39,7 +39,7 @@ public class Store {
             return productRepository.saveOrUpdate(product.get());
         }
 
-        throw new EntityNotFoundException(String.format("Product %s not exist.", productId));
+        throw new EntityNotFoundException(String.format("Product %s not found.", productId));
     }
 
 }
