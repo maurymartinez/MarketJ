@@ -26,4 +26,8 @@ public class Store {
         return productRepository.findAll(search).stream().toList();
     }
 
+    public Product sellProduct(String id) {
+        throw new IllegalStateException("no implemented yet");
+    }
+
 }
