@@ -46,7 +46,7 @@ class StoreControllerTest {
 
         when(store.addProduct(any(Product.class))).thenReturn(productDTO.toEntity());
 
-        mvc.perform(post("/v1/store/product")
+        mvc.perform(post("/v1/store/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(getJsonValueOf(productDTO)))
                 .andExpect(status().isOk());
