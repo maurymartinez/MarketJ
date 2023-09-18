@@ -10,3 +10,7 @@ spring:
       database: ${MJ_DB_DATABASE:APITests}
       username: ${MJ_DB_USER:api}
       password: ${MJ_DB_PASSWORD:api}
+
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
