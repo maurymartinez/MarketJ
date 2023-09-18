@@ -192,6 +192,22 @@ public class ProductRepositoryTest {
     }
 
     @Test
+    void findAllWithSearchFieldTagContainSingleValueRedMustReturnWantedProducts() {
+        var pageSearch = new PageSearch();
+        var fieldsSearch = new ArrayList<FieldSearch>();
+        var fieldSearch = from("tags", "red");
+        fieldSearch.setType(FieldSearch.FieldType.TEXT);
+        fieldSearch.setOperation(FieldSearch.SearchOperation.CONTAINS);
+        fieldsSearch.add(fieldSearch);
+        pageSearch.setFields(fieldsSearch);
+        pageSearch.setSize(45);
+
+        var fields = repository.findAll(pageSearch);
+
+        assertThat(fields).hasSize(15);
+    }
+
+    @Test
     void findAllWithSearchFieldTagNoContainRedMustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldsSearch = new ArrayList<FieldSearch>();
