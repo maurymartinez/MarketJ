@@ -1,5 +1,6 @@
 package com.market.store.domain;
 
+import com.market.core.domain.EntityNotFoundException;
 import com.market.core.domain.search.PageSearch;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -128,5 +130,13 @@ class StoreTest {
         assertThatThrownBy(() -> store.sellProduct(""))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("ProductId cant be null or blank.");
+    }
+
+    @Test
+    void SellNotFoundProduct() {
+        var id = UUID.randomUUID().toString();
+        assertThatThrownBy(() -> store.sellProduct(id))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage(String.format("Product %s not exist.", id));
     }
 }
