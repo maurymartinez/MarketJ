@@ -48,20 +48,32 @@ public class MongoProductRepositoryImp implements ProductRepository {
         var query = new Criteria();
 
         for (FieldSearch field : search.getFields())
-            if (field.convertedValue().isPresent())
+            field.convertedValue().ifPresent(fieldValue -> {
                 switch (field.getOperation()) {
-                    case NOT_EQUAL -> query.and(field.getName()).ne(field.convertedValue().get());
-                    case CONTAINS -> query.and(field.getName()).all((Collection<?>) field.convertedValue().get());
-                    case DOES_NOT_CONTAIN ->
-                            query.and(field.getName()).not().in((Collection<?>) field.convertedValue().get());
-                    case GREATER_THAN -> query.and(field.getName()).gt(field.convertedValue().get());
-                    case GREATER_THAN_EQUAL -> query.and(field.getName()).gte(field.convertedValue().get());
-                    case LESS_THAN -> query.and(field.getName()).lt(field.convertedValue().get());
-                    case LESS_THAN_EQUAL -> query.and(field.getName()).lte(field.convertedValue().get());
-                    default -> query.and(field.getName()).is(field.convertedValue().get());
+                    case NOT_EQUAL -> query.and(field.getName()).ne(fieldValue);
+                    case CONTAINS -> query.and(field.getName()).all(castOrCreateCollection(fieldValue));
+                    case DOES_NOT_CONTAIN -> query.and(field.getName()).not().in(castOrCreateCollection(fieldValue));
+                    case GREATER_THAN -> query.and(field.getName()).gt(fieldValue);
+                    case GREATER_THAN_EQUAL -> query.and(field.getName()).gte(fieldValue);
+                    case LESS_THAN -> query.and(field.getName()).lt(fieldValue);
+                    case LESS_THAN_EQUAL -> query.and(field.getName()).lte(fieldValue);
+                    default -> query.and(field.getName()).is(fieldValue);
                 }
+            });
 
         operations.add(match(query));
+    }
+
+    private Collection<?> castOrCreateCollection(Object possibleCollection) {
+
+        if (possibleCollection instanceof Collection<?>)
+            return (Collection<?>) possibleCollection;
+
+        var collection = new ArrayList<>();
+        collection.add(possibleCollection);
+
+        return collection;
+
     }
 
     private void addOrder(List<AggregationOperation> operations, PageSearch search) {
