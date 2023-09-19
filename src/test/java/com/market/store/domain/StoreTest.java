@@ -142,4 +142,11 @@ class StoreTest {
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(String.format("Product %s not found.", id));
     }
+
+    @Test
+    void getTotalProducts() {
+        when(productRepository.getNumberOfProducts(anyBoolean())).thenReturn(15l);
+
+        assertThat(store.getTotalProducts()).isEqualTo(15l);
+    }
 }
