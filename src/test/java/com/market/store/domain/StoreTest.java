@@ -1,15 +1,19 @@
 package com.market.store.domain;
 
+import com.market.core.domain.EntityNotFoundException;
 import com.market.core.domain.search.PageSearch;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class StoreTest {
@@ -83,5 +87,59 @@ class StoreTest {
         store.findProducts(new PageSearch());
 
         verify(productRepository, times(1)).findAll(any());
+    }
+
+    @Test
+    void SellProduct() {
+        var product = new Product();
+        product.setId(UUID.randomUUID().toString());
+        product.setSerial("123");
+        product.setName("Product");
+
+        when(productRepository.getProductById(eq(product.getId()))).thenReturn(Optional.of(product));
+        when(productRepository.saveOrUpdate(eq(product))).thenReturn(product);
+
+        var productSold = store.sellProduct(product.getId());
+
+        verify(productRepository, times(1)).saveOrUpdate(argThat(Product::isSold));
+
+        assertThat(productSold.isSold()).isTrue();
+    }
+
+    @Test
+    void SellSoldProduct() {
+        var product = new Product();
+        product.setId(UUID.randomUUID().toString());
+        product.setSerial("123");
+        product.setName("Product");
+        product.setSold(true);
+
+        when(productRepository.getProductById(eq(product.getId()))).thenReturn(Optional.of(product));
+
+        assertThatThrownBy(() -> store.sellProduct(product.getId()))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(String.format("Product %s has already been sold.", product.getId()));
+    }
+
+    @Test
+    void SellProductWithNullId() {
+        assertThatThrownBy(() -> store.sellProduct(null))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("ProductId cant be null or blank.");
+    }
+
+    @Test
+    void SellProductWithBlankId() {
+        assertThatThrownBy(() -> store.sellProduct(""))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("ProductId cant be null or blank.");
+    }
+
+    @Test
+    void SellNotFoundProduct() {
+        var id = UUID.randomUUID().toString();
+        assertThatThrownBy(() -> store.sellProduct(id))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage(String.format("Product %s not found.", id));
     }
 }

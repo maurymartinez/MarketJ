@@ -1,6 +1,7 @@
 package com.market.store.api;
 
 import com.market.core.api.ApiExceptionHandler;
+import com.market.core.domain.EntityNotFoundException;
 import com.market.core.domain.search.FieldSearch;
 import com.market.core.domain.search.PageSearch;
 import com.market.store.api.dto.ProductDTO;
@@ -45,7 +46,7 @@ class StoreControllerTest {
 
         when(store.addProduct(any(Product.class))).thenReturn(productDTO.toEntity());
 
-        mvc.perform(post("/v1/store/product")
+        mvc.perform(post("/v1/store/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(getJsonValueOf(productDTO)))
                 .andExpect(status().isOk());
@@ -67,7 +68,7 @@ class StoreControllerTest {
 
         when(store.addProduct(any(Product.class))).thenReturn(productDTO.toEntity());
 
-        var responseContent = mvc.perform(post("/v1/store/product")
+        var responseContent = mvc.perform(post("/v1/store/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(getJsonValueOf(productDTO)))
                 .andExpect(status().isBadRequest())
@@ -86,7 +87,7 @@ class StoreControllerTest {
 
         when(store.addProduct(any(Product.class))).thenReturn(productDTO.toEntity());
 
-        var responseContent = mvc.perform(post("/v1/store/product")
+        var responseContent = mvc.perform(post("/v1/store/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(getJsonValueOf(productDTO)))
                 .andExpect(status().isBadRequest())
@@ -105,7 +106,7 @@ class StoreControllerTest {
 
         when(store.addProduct(any(Product.class))).thenReturn(productDTO.toEntity());
 
-        var responseContent = mvc.perform(post("/v1/store/product")
+        var responseContent = mvc.perform(post("/v1/store/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(getJsonValueOf(productDTO)))
                 .andExpect(status().isBadRequest())
@@ -130,7 +131,7 @@ class StoreControllerTest {
 
         var page = new PageSearch(3, 30, List.of(nameField, typeField));
 
-        mvc.perform(post("/v1/store/product/search")
+        mvc.perform(post("/v1/store/products/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JsonUtil.getJsonValueOf(page)))
                 .andExpect(status().isOk());
@@ -156,7 +157,7 @@ class StoreControllerTest {
     void whenGETFindProductsWithNoParametersThen200() throws Exception {
         when(store.findProducts(any(PageSearch.class))).thenReturn(new ArrayList<>());
 
-        mvc.perform(post("/v1/store/product/search")
+        mvc.perform(post("/v1/store/products/search")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
@@ -165,5 +166,74 @@ class StoreControllerTest {
                         && search.getSize() == 20
                         && search.getFields().isEmpty()
         ));
+    }
+
+    @Test
+    void whenPOSTSellProductThen200() throws Exception {
+        var productDTO = new ProductDTO("id123", "", "", "type1", Collections.singleton("red"), 16.54);
+        var productSold = productDTO.toEntity();
+        productSold.setSold(Boolean.TRUE);
+
+        when(store.sellProduct(anyString())).thenReturn(productSold);
+
+        mvc.perform(post("/v1/store/products/id123/sell")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(store, times(1)).sellProduct(anyString());
+    }
+
+    @Test
+    void whenPOSTSellProductWithBlankIdThen400AndBlankProductIdMsg() throws Exception {
+        when(store.sellProduct(anyString())).thenThrow(new IllegalStateException("ProductId cant be null or blank."));
+
+        var responseContent = mvc.perform(post("/v1/store/products/   /sell")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+
+        var response = JsonUtil.getValueOfJson(responseContent, ApiExceptionHandler.ErrorResponse.class);
+
+        verify(store, times(1)).sellProduct(anyString());
+
+        assertThat(response).isNotNull();
+        assertThat(response.getErrors()).hasSize(1);
+        assertThat(response.getErrors()).contains("msg:ProductId cant be null or blank.");
+    }
+
+    @Test
+    void whenPOSTSellSoldProductThen400AndSoldProductIdMsg() throws Exception {
+        when(store.sellProduct(anyString())).thenThrow(new IllegalStateException("Product id123 has already been sold."));
+
+        var responseContent = mvc.perform(post("/v1/store/products/id123/sell")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+
+        var response = JsonUtil.getValueOfJson(responseContent, ApiExceptionHandler.ErrorResponse.class);
+
+        verify(store, times(1)).sellProduct(anyString());
+
+        assertThat(response).isNotNull();
+        assertThat(response.getErrors()).hasSize(1);
+        assertThat(response.getErrors()).contains("msg:Product id123 has already been sold.");
+    }
+
+    @Test
+    void whenPOSTSellNotFoundProductThen404AndNotFoundProductIdMsg() throws Exception {
+        when(store.sellProduct(anyString())).thenThrow(new EntityNotFoundException("Product id123 not found."));
+
+        var responseContent = mvc.perform(post("/v1/store/products/id123/sell")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andReturn().getResponse().getContentAsString();
+
+        var response = JsonUtil.getValueOfJson(responseContent, ApiExceptionHandler.ErrorResponse.class);
+
+        verify(store, times(1)).sellProduct(anyString());
+
+        assertThat(response).isNotNull();
+        assertThat(response.getErrors()).hasSize(1);
+        assertThat(response.getErrors()).contains("msg:Product id123 not found.");
     }
 }

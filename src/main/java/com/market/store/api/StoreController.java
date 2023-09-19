@@ -21,7 +21,7 @@ public class StoreController {
     private final Store store;
 
     @ApiOperation(value = "Save Product", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PostMapping("/product")
+    @PostMapping("/products")
     public ResponseEntity<ProductDTO> addProduct(@Valid @RequestBody ProductDTO productDTO) {
 
         var storedProduct = store.addProduct(productDTO.toEntity());
@@ -30,7 +30,7 @@ public class StoreController {
     }
 
     @ApiOperation(value = "Search Product", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PostMapping("/product/search")
+    @PostMapping("/products/search")
     public ResponseEntity<List<ProductDTO>> getProduct(@RequestBody(required = false) PageSearch search) {
         if (Objects.isNull(search))
             search = new PageSearch();
@@ -38,5 +38,13 @@ public class StoreController {
         var products = store.findProducts(search).stream().map(ProductDTO::from).toList();
 
         return ResponseEntity.ok(products);
+    }
+
+    @ApiOperation(value = "Sell Product", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/products/{id}/sell")
+    public ResponseEntity<ProductDTO> sellProduct(@PathVariable("id") String productId) {
+        var productSold = store.sellProduct(productId);
+
+        return ResponseEntity.ok(ProductDTO.from(productSold));
     }
 }

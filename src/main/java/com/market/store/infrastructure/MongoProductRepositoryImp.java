@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
@@ -31,6 +32,11 @@ public class MongoProductRepositoryImp implements ProductRepository {
     @Override
     public Product saveOrUpdate(Product product) {
         return mongoProductRepository.save(product);
+    }
+
+    @Override
+    public Optional<Product> getProductById(String productId) {
+        return this.mongoProductRepository.findById(productId);
     }
 
     @Override

@@ -36,4 +36,16 @@ class AssertsTest {
     void whenAssertNonNullOrEmptyWithNoNullNoEmptyValueShouldNoThrowIllegalStateException() {
         Asserts.assertNonNullOrEmpty("some value", "Some message");
     }
+
+    @Test
+    void whenAssertIfNotWithTrueShouldThrowIllegalStateException() {
+        assertThatThrownBy(() -> Asserts.assertIfNot(Boolean.TRUE, "Some message"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Some message");
+    }
+
+    @Test
+    void whenAssertIfNotWithFalseValueShouldNoThrowIllegalStateException() {
+        Asserts.assertIfNot(Boolean.FALSE, "Some message");
+    }
 }
