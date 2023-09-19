@@ -38,7 +38,13 @@ public class MongoProductRepositoryImp extends AdvanceSearch implements ProductR
         return mongoOperations.aggregate(newAggregation(operations), Product.class, Product.class).getMappedResults();
     }
 
+    @Override
+    public long getNumberOfProducts(boolean sold) {
+        return mongoProductRepository.countBySold(sold);
+    }
+
     @Repository
     interface MongoProductRepository extends MongoRepository<Product, String> {
+        long countBySold(boolean sold);
     }
 }
