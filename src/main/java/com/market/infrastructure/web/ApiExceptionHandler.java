@@ -1,4 +1,4 @@
-package com.market.core.api;
+package com.market.infrastructure.web;
 
 import com.market.core.domain.EntityNotFoundException;
 import lombok.Data;
