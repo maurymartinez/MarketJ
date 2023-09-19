@@ -42,4 +42,8 @@ public class Store {
         throw new EntityNotFoundException(String.format("Product %s not found.", productId));
     }
 
+    public int getTotalProducts() {
+        throw new IllegalStateException("Not implemented yet");
+    }
+
 }
