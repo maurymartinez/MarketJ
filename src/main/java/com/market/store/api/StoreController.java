@@ -1,6 +1,7 @@
 package com.market.store.api;
 
 import com.market.core.domain.search.PageSearch;
+import com.market.store.api.dto.CountDTO;
 import com.market.store.api.dto.ProductDTO;
 import com.market.store.domain.Store;
 import io.swagger.annotations.ApiOperation;
@@ -46,5 +47,13 @@ public class StoreController {
         var productSold = store.sellProduct(productId);
 
         return ResponseEntity.ok(ProductDTO.from(productSold));
+    }
+
+    @ApiOperation(value = "Count of Products on store", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/products/count")
+    public ResponseEntity<CountDTO> countProduct() {
+        var count = store.getTotalProducts();
+
+        return ResponseEntity.ok(new CountDTO(count));
     }
 }
