@@ -1,9 +1,10 @@
 package com.market.store.api;
 
-import com.market.core.api.ApiExceptionHandler;
+import com.market.infrastructure.web.ApiExceptionHandler;
 import com.market.core.domain.EntityNotFoundException;
 import com.market.core.domain.search.FieldSearch;
 import com.market.core.domain.search.PageSearch;
+import com.market.store.api.dto.CountDTO;
 import com.market.store.api.dto.ProductDTO;
 import com.market.store.domain.Product;
 import com.market.store.domain.Store;
@@ -26,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -235,5 +237,20 @@ class StoreControllerTest {
         assertThat(response).isNotNull();
         assertThat(response.getErrors()).hasSize(1);
         assertThat(response.getErrors()).contains("msg:Product id123 not found.");
+    }
+
+    @Test
+    void WhenGETProductsCountThen200() throws Exception {
+        when(store.getTotalProducts()).thenReturn(15l);
+
+        var responseContent = mvc.perform(get("/v1/store/products/count")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        var response = JsonUtil.getValueOfJson(responseContent, CountDTO.class);
+
+        assertThat(response.getCount()).isEqualTo(15);
+
     }
 }
