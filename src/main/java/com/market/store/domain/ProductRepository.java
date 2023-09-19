@@ -12,4 +12,6 @@ public interface ProductRepository {
     Collection<Product> findAll(PageSearch search);
 
     Optional<Product> getProductById(String productId);
+
+    long getNumberOfProducts(boolean sold);
 }

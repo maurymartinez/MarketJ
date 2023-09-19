@@ -6,12 +6,17 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
@@ -341,6 +346,14 @@ public class ProductRepositoryTest {
 
         assertThat(fields).hasSize(45);
         assertThat(fields.stream().map(Product::isSold)).isSortedAccordingTo(Comparator.reverseOrder());
+    }
+
+    @ParameterizedTest
+    @CsvSource({"true, 22", "false,23"})
+    void getNumberOfProductsMustReturnWantedAmount(boolean sold, long totalExpected) {
+        var total = repository.getNumberOfProducts(sold);
+
+        assertThat(total).isEqualTo(totalExpected);
     }
 
     private void fillDB(int amount) {
