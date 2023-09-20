@@ -1,0 +1,7 @@
+package com.market.core.domain;
+
+public class EntityNotFoundException extends RuntimeException {
+    public EntityNotFoundException(String message) {
+        super(message);
+    }
+}
