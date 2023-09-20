@@ -1,6 +1,4 @@
-![Coverage](.github/badges/jacoco.svg)
-
-# MarketJ
+# MarketJ ![Coverage](.github/badges/jacoco.svg)
 
 ## Requisites
 * IntelliJ IDEA's Lombok [plugin](https://plugins.jetbrains.com/plugin/6317-lombok-plugin) for easy manipulation of boilerplate code using Lombok annotations. Check it's documentation [here](https://plugins.jetbrains.com/plugin/6317-lombok-plugin).
