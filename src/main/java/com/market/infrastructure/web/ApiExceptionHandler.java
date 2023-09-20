@@ -1,7 +1,8 @@
 package com.market.infrastructure.web;
 
 import com.market.core.domain.EntityNotFoundException;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -57,7 +61,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return ex.getBindingResult().getAllErrors().stream().map(error -> String.format(METHOD_ARG_NOT_VALID_STRING_PATTERN, ((FieldError) error).getField(), error.getDefaultMessage())).collect(Collectors.toList());
     }
 
-    @Data
+    @Getter
+    @Setter
     public static class ErrorResponse {
         private Timestamp timestamp = Timestamp.from(Instant.now());
         private int status;

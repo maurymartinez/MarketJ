@@ -1,8 +1,12 @@
 package com.market.core.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.Objects;
 
-public class Asserts {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class Asserts {
     public static void assertNonNull(Object o, String message) {
         assertIfNot(Objects.isNull(o), message);
     }
