@@ -1,3 +1,5 @@
+![Coverage](.github/badges/jacoco.svg)
+
 # MarketJ
 
 ## Requisites
