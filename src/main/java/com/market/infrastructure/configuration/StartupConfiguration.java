@@ -3,6 +3,7 @@ package com.market.infrastructure.configuration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
 
 import java.awt.*;
@@ -10,7 +11,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-
+@Profile("develop")
 @Configuration
 public class StartupConfiguration {
 
