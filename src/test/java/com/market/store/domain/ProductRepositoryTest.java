@@ -31,6 +31,8 @@ public class ProductRepositoryTest {
     @Autowired
     ProductRepository repository;
 
+    List<String> productIds = new ArrayList<>();
+
     @BeforeAll
     void beforeAll() {
         fillDB(45);
@@ -134,6 +136,22 @@ public class ProductRepositoryTest {
     }
 
     @Test
+    void findAllWithSearchFieldPriceGTMustReturnWantedProducts() {
+        var pageSearch = new PageSearch();
+        var fieldsSearch = new ArrayList<FieldSearch>();
+        var fieldSearch = from("price", "24");
+        fieldSearch.setOperation(FieldSearch.SearchOperation.GREATER_THAN);
+        fieldSearch.setType(FieldSearch.FieldType.NUMBER);
+        fieldsSearch.add(fieldSearch);
+        pageSearch.setFields(fieldsSearch);
+        pageSearch.setSize(45);
+
+        var fields = repository.findAll(pageSearch);
+
+        assertThat(fields).hasSize(27);
+    }
+
+    @Test
     void findAllWithSearchFieldPriceLTEMustReturnWantedProducts() {
         var pageSearch = new PageSearch();
         var fieldsSearch = new ArrayList<FieldSearch>();
@@ -147,6 +165,22 @@ public class ProductRepositoryTest {
         var fields = repository.findAll(pageSearch);
 
         assertThat(fields).hasSize(27);
+    }
+
+    @Test
+    void findAllWithSearchFieldPriceLTMustReturnWantedProducts() {
+        var pageSearch = new PageSearch();
+        var fieldsSearch = new ArrayList<FieldSearch>();
+        var fieldSearch = from("price", "25");
+        fieldSearch.setOperation(FieldSearch.SearchOperation.LESS_THAN);
+        fieldSearch.setType(FieldSearch.FieldType.NUMBER);
+        fieldsSearch.add(fieldSearch);
+        pageSearch.setFields(fieldsSearch);
+        pageSearch.setSize(45);
+
+        var fields = repository.findAll(pageSearch);
+
+        assertThat(fields).hasSize(18);
     }
 
     @Test
@@ -348,6 +382,21 @@ public class ProductRepositoryTest {
         assertThat(fields.stream().map(Product::isSold)).isSortedAccordingTo(Comparator.reverseOrder());
     }
 
+    @Test
+    void getProductByIdAndProductExistMustReturnWantedProduct() {
+        var product = repository.getProductById(productIds.get(0));
+
+        assertThat(product).isNotEmpty();
+        assertThat(product.get().getId()).isEqualTo(productIds.get(0));
+    }
+
+    @Test
+    void getProductByIdAndProductNotExistMustReturnEmptyProduct() {
+        var product = repository.getProductById("fakeId");
+
+        assertThat(product).isEmpty();
+    }
+
     @ParameterizedTest
     @CsvSource({"true, 22", "false,23"})
     void getNumberOfProductsMustReturnWantedAmount(boolean sold, long totalExpected) {
@@ -370,7 +419,9 @@ public class ProductRepositoryTest {
 
         IntStream.range(1, amount + 1)
                 .mapToObj(i -> new Product(UUID.randomUUID().toString(), "name" + i, "type" + i % 5, tagsGenerator.apply(i), 23.0 + i % 5, i % 2 == 0))
-                .forEach(repository::saveOrUpdate);
+                .map(repository::saveOrUpdate)
+                .map(Product::getId)
+                .forEach(productIds::add);
     }
 
     private FieldSearch from(String name, String value) {
