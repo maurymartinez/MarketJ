@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [ feature/add_github_coverage_badge ]
+    branches: [ dev ]
 
 jobs:
   coverage:
