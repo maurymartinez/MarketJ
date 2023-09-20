@@ -9,6 +9,7 @@ jobs:
     steps:
       - name: Build with Maven
         run: |
+          cd ..
           ls -l
           mvn -B test
       - name: Generate JaCoCo Badge
