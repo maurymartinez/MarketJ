@@ -7,7 +7,7 @@ import org.springframework.data.annotation.Id;
 
 @Getter
 @Setter
-public class EntityBaseInformation extends BaseInformation {
+public abstract class EntityBaseInformation extends BaseInformation {
     @Id
     protected String id;
 }

@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class BaseInformation {
+public abstract class BaseInformation {
     protected Date creationDate = new Date();
     protected Date lastChange;
 }
