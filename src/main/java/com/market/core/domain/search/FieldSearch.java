@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static java.util.Arrays.stream;
-
 
 @Getter
 @Setter
@@ -34,7 +32,7 @@ public class FieldSearch {
             return Optional.empty();
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
                  IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(String.format("Value %s cant be converted to %s", value, type.name()));
         }
     }
 
