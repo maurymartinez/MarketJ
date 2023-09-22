@@ -22,6 +22,7 @@ public class ProductDTO {
         productDTO.setType(product.getType());
         productDTO.setTags(product.getTags());
         productDTO.setPrice(product.getPrice());
+        productDTO.setSold(product.isSold());
 
         return productDTO;
     }
@@ -36,16 +37,10 @@ public class ProductDTO {
     private Collection<String> tags;
     private double price;
 
+    private boolean sold;
+
     public Product toEntity() {
-        var product = new Product();
+        return new Product(id, serial, name, type, tags, price, sold);
 
-        product.setId(id);
-        product.setName(name);
-        product.setSerial(serial);
-        product.setType(type);
-        product.setTags(tags);
-        product.setPrice(price);
-
-        return product;
     }
 }
