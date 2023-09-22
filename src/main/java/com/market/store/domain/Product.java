@@ -1,21 +1,29 @@
 package com.market.store.domain;
 
 import com.market.core.domain.EntityBaseInformation;
+import com.market.core.util.Asserts;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Collection;
+import java.util.List;
 
 
-@Document
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product extends EntityBaseInformation {
+
+    public Product(String id, String serial, String name, String type, Collection<String> tags, double price, boolean sold) {
+        this.id = id;
+        this.serial = serial;
+        this.name = name;
+        this.type = type;
+        this.tags = tags;
+        this.price = price;
+        this.sold = sold;
+    }
 
     private String serial;
     private String name;

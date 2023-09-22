@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,8 +43,7 @@ class StoreTest {
 
     @Test
     void whenAddProductWithProductSerialEmptyThenThrowIllegalStateException() {
-        var product = new Product();
-        product.setSerial("");
+        var product = new Product("id123", "", "", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE);
 
         assertThatThrownBy(() -> store.addProduct(product))
                 .isInstanceOf(IllegalStateException.class)
@@ -52,8 +52,7 @@ class StoreTest {
 
     @Test
     void whenAddProductWithProductNameNullThenThrowIllegalStateException() {
-        var product = new Product();
-        product.setSerial("123");
+        var product = new Product("id123", "123", "", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE);
 
         assertThatThrownBy(() -> store.addProduct(product))
                 .isInstanceOf(IllegalStateException.class)
@@ -62,9 +61,7 @@ class StoreTest {
 
     @Test
     void whenAddProductWithProductNameEmptyThenThrowIllegalStateException() {
-        var product = new Product();
-        product.setSerial("123");
-        product.setName("");
+        var product = new Product("id123", "123", "", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE);
 
         assertThatThrownBy(() -> store.addProduct(product))
                 .isInstanceOf(IllegalStateException.class)
@@ -73,9 +70,7 @@ class StoreTest {
 
     @Test
     void whenAddProductWithProductThenProductRepository_saveOrUpdate() {
-        var product = new Product();
-        product.setSerial("123");
-        product.setName("Product");
+        var product = new Product("id123", "123", "Product", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE);
 
         store.addProduct(product);
 
@@ -91,10 +86,7 @@ class StoreTest {
 
     @Test
     void SellProduct() {
-        var product = new Product();
-        product.setId(UUID.randomUUID().toString());
-        product.setSerial("123");
-        product.setName("Product");
+        var product = new Product(UUID.randomUUID().toString(), "123", "Product", "type1", Collections.singleton("red"), 16.54, Boolean.FALSE);
 
         when(productRepository.getProductById(eq(product.getId()))).thenReturn(Optional.of(product));
         when(productRepository.saveOrUpdate(eq(product))).thenReturn(product);
@@ -108,11 +100,7 @@ class StoreTest {
 
     @Test
     void SellSoldProduct() {
-        var product = new Product();
-        product.setId(UUID.randomUUID().toString());
-        product.setSerial("123");
-        product.setName("Product");
-        product.setSold(true);
+        var product = new Product(UUID.randomUUID().toString(), "123", "Product", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE);
 
         when(productRepository.getProductById(eq(product.getId()))).thenReturn(Optional.of(product));
 

@@ -44,7 +44,7 @@ class StoreControllerTest {
 
     @Test
     void whenPOSTaddProductThen200() throws Exception {
-        var productDTO = new ProductDTO("id123", "serial123", "name123", "type1", Collections.singleton("red"), 16.54);
+        var productDTO = new ProductDTO("id123", "serial123", "name123", "type1", Collections.singleton("red"), 16.54, Boolean.FALSE);
 
         when(store.addProduct(any(Product.class))).thenReturn(productDTO.toEntity());
 
@@ -66,7 +66,7 @@ class StoreControllerTest {
 
     @Test
     void whenPOSTaddProductWithProductNoSerialThen400AndSerialMsg() throws Exception {
-        var productDTO = new ProductDTO("id123", "", "name123", "type1", Collections.singleton("red"), 16.54);
+        var productDTO = new ProductDTO("id123", "", "name123", "type1", Collections.singleton("red"), 16.54, Boolean.FALSE);
 
         when(store.addProduct(any(Product.class))).thenReturn(productDTO.toEntity());
 
@@ -85,7 +85,7 @@ class StoreControllerTest {
 
     @Test
     void whenPOSTaddProductWithProductNoSerialThen400AndNameMsg() throws Exception {
-        var productDTO = new ProductDTO("id123", "serial123", "", "type1", Collections.singleton("red"), 16.54);
+        var productDTO = new ProductDTO("id123", "serial123", "", "type1", Collections.singleton("red"), 16.54, Boolean.FALSE);
 
         when(store.addProduct(any(Product.class))).thenReturn(productDTO.toEntity());
 
@@ -104,7 +104,7 @@ class StoreControllerTest {
 
     @Test
     void whenPOSTaddProductWithProductNoSerialThen400AndSerialNameMsg() throws Exception {
-        var productDTO = new ProductDTO("id123", "", "", "type1", Collections.singleton("red"), 16.54);
+        var productDTO = new ProductDTO("id123", "", "", "type1", Collections.singleton("red"), 16.54, Boolean.FALSE);
 
         when(store.addProduct(any(Product.class))).thenReturn(productDTO.toEntity());
 
@@ -172,9 +172,8 @@ class StoreControllerTest {
 
     @Test
     void whenPOSTSellProductThen200() throws Exception {
-        var productDTO = new ProductDTO("id123", "", "", "type1", Collections.singleton("red"), 16.54);
+        var productDTO = new ProductDTO("id123", "", "", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE);
         var productSold = productDTO.toEntity();
-        productSold.setSold(Boolean.TRUE);
 
         when(store.sellProduct(anyString())).thenReturn(productSold);
 
