@@ -2,18 +2,17 @@ package com.market.store.domain;
 
 import com.market.core.domain.EntityBaseInformation;
 import com.market.core.util.Asserts;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Collection;
 import java.util.List;
 
 
 @Getter
+@Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product extends EntityBaseInformation {
+public class Product extends EntityBaseInformation implements Cloneable {
 
     public Product(String id, String serial, String name, String type, Collection<String> tags, double price, boolean sold) {
         this.id = id;
@@ -36,8 +35,20 @@ public class Product extends EntityBaseInformation {
     Product sell() {
         Asserts.assertIfNot(sold, String.format("Product %s has already been sold.", id));
 
-        sold = Boolean.TRUE;
+        var product = this.clone();
+        product.setSold(Boolean.TRUE);
 
-        return new Product(id, serial, name, type, List.copyOf(tags), price, sold);
+        return product;
+    }
+
+    @Override
+    public Product clone() {
+        try {
+            var clone = (Product) super.clone();
+            clone.setTags(List.copyOf(tags));
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

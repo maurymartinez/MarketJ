@@ -32,11 +32,8 @@ public class Store {
 
         var product = productRepository.getProductById(productId);
 
-        if (product.isPresent()) {
-            product.get().sell();
-
-            return productRepository.saveOrUpdate(product.get());
-        }
+        if (product.isPresent())
+            return productRepository.saveOrUpdate(product.get().sell());
 
         throw new EntityNotFoundException(String.format("Product %s not found.", productId));
     }
