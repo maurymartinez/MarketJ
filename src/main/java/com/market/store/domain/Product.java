@@ -24,4 +24,12 @@ public class Product extends EntityBaseInformation {
     private Collection<String> tags;
     private double price;
     private boolean sold;
+
+    public Product sell() {
+        Asserts.assertIfNot(sold, String.format("Product %s has already been sold.", id));
+
+        sold = Boolean.TRUE;
+
+        return new Product(id, serial, name, type, List.copyOf(tags), price, sold);
+    }
 }
