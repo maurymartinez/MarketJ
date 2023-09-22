@@ -33,7 +33,7 @@ public class Product extends EntityBaseInformation {
     private double price;
     private boolean sold;
 
-    public Product sell() {
+    Product sell() {
         Asserts.assertIfNot(sold, String.format("Product %s has already been sold.", id));
 
         sold = Boolean.TRUE;
