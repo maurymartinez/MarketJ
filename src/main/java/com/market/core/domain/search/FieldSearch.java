@@ -48,12 +48,6 @@ public class FieldSearch {
         SearchOperation(String simple) {
             this.simple = simple;
         }
-
-        public SearchOperation ifNotExist(String simple) {
-            return stream(FieldSearch.SearchOperation.values())
-                    .filter(value -> value.getSimple().equals(simple))
-                    .findFirst().orElse(this);
-        }
     }
 
     public enum FieldType {
