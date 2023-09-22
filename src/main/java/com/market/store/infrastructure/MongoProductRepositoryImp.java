@@ -10,7 +10,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 
@@ -23,19 +26,29 @@ public class MongoProductRepositoryImp extends AdvanceSearch implements ProductR
 
     @Override
     public Product saveOrUpdate(Product product) {
-        return mongoProductRepository.save(product);
+        var dbEntity = DBProductEntity.from(product);
+
+        if (Objects.isNull(dbEntity.getCreationDate()))
+            dbEntity.setCreationDate(new Date());
+        dbEntity.setLastChange(new Date());
+
+        var savedProduct = mongoProductRepository.save(dbEntity);
+
+        return savedProduct.toDomain();
     }
 
     @Override
     public Optional<Product> getProductById(String productId) {
-        return this.mongoProductRepository.findById(productId);
+        return this.mongoProductRepository.findById(productId).map(DBProductEntity::toDomain);
     }
 
     @Override
     public Collection<Product> findAll(PageSearch search) {
         var operations = buildQuery(search);
 
-        return mongoOperations.aggregate(newAggregation(operations), Product.class, Product.class).getMappedResults();
+        return mongoOperations.aggregate(newAggregation(operations), DBProductEntity.class, DBProductEntity.class).getMappedResults()
+                .stream().map(DBProductEntity::toDomain)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -44,7 +57,7 @@ public class MongoProductRepositoryImp extends AdvanceSearch implements ProductR
     }
 
     @Repository
-    interface MongoProductRepository extends MongoRepository<Product, String> {
+    interface MongoProductRepository extends MongoRepository<DBProductEntity, String> {
         long countBySold(boolean sold);
     }
 }
