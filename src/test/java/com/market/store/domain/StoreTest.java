@@ -2,12 +2,14 @@ package com.market.store.domain;
 
 import com.market.core.domain.EntityNotFoundException;
 import com.market.core.domain.search.PageSearch;
+import com.market.store.domain.value.ProductValue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,7 +36,7 @@ class StoreTest {
 
     @Test
     void whenAddProductWithProductSerialNullThenThrowIllegalStateException() {
-        var product = new Product();
+        var product = new ProductValue("id123", null, "", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE, new Date(), new Date());
 
         assertThatThrownBy(() -> store.addProduct(product))
                 .isInstanceOf(IllegalStateException.class)
@@ -43,7 +45,7 @@ class StoreTest {
 
     @Test
     void whenAddProductWithProductSerialEmptyThenThrowIllegalStateException() {
-        var product = new Product("id123", "", "", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE);
+        var product = new ProductValue("id123", "", "", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE, new Date(), new Date());
 
         assertThatThrownBy(() -> store.addProduct(product))
                 .isInstanceOf(IllegalStateException.class)
@@ -52,7 +54,7 @@ class StoreTest {
 
     @Test
     void whenAddProductWithProductNameNullThenThrowIllegalStateException() {
-        var product = new Product("id123", "123", "", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE);
+        var product = new ProductValue("id123", "123", "", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE, new Date(), new Date());
 
         assertThatThrownBy(() -> store.addProduct(product))
                 .isInstanceOf(IllegalStateException.class)
@@ -61,7 +63,7 @@ class StoreTest {
 
     @Test
     void whenAddProductWithProductNameEmptyThenThrowIllegalStateException() {
-        var product = new Product("id123", "123", "", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE);
+        var product = new ProductValue("id123", "123", "", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE, new Date(), new Date());
 
         assertThatThrownBy(() -> store.addProduct(product))
                 .isInstanceOf(IllegalStateException.class)
@@ -69,8 +71,21 @@ class StoreTest {
     }
 
     @Test
+    void whenAddProductWithExistentProductThenThrowIllegalStateException() {
+        var product = new ProductValue("id123", "123", "Product", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE, new Date(), new Date());
+
+        when(productRepository.getProductById(anyString())).thenReturn(Optional.of(product));
+
+        assertThatThrownBy(() -> store.addProduct(product))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Product with id %s already exist", product.id());
+    }
+
+    @Test
     void whenAddProductWithProductThenProductRepository_saveOrUpdate() {
-        var product = new Product("id123", "123", "Product", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE);
+        var product = new ProductValue("id123", "123", "Product", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE, new Date(), new Date());
+
+        when(productRepository.saveOrUpdate(any())).thenReturn(product);
 
         store.addProduct(product);
 
@@ -86,28 +101,28 @@ class StoreTest {
 
     @Test
     void SellProduct() {
-        var product = new Product(UUID.randomUUID().toString(), "123", "Product", "type1", Collections.singleton("red"), 16.54, Boolean.FALSE);
-        var expectedProduct = new Product(UUID.randomUUID().toString(), "123", "Product", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE);
+        var product = new ProductValue(UUID.randomUUID().toString(), "123", "Product", "type1", Collections.singleton("red"), 16.54, Boolean.FALSE, new Date(), new Date());
+        var expectedProduct = new ProductValue(UUID.randomUUID().toString(), "123", "Product", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE, new Date(), new Date());
 
-        when(productRepository.getProductById(eq(product.getId()))).thenReturn(Optional.of(product));
-        when(productRepository.saveOrUpdate(argThat(product1 -> product1.getId().equals(product.getId())))).thenReturn(expectedProduct);
+        when(productRepository.getProductById(eq(product.id()))).thenReturn(Optional.of(product));
+        when(productRepository.saveOrUpdate(any(ProductValue.class))).thenReturn(expectedProduct);
 
-        var productSold = store.sellProduct(product.getId());
+        var productSold = store.sellProduct(product.id());
 
-        verify(productRepository, times(1)).saveOrUpdate(argThat(Product::isSold));
+        verify(productRepository, times(1)).saveOrUpdate(argThat(ProductValue::sold));
 
-        assertThat(productSold.isSold()).isTrue();
+        assertThat(productSold.sold()).isTrue();
     }
 
     @Test
     void SellSoldProduct() {
-        var product = new Product(UUID.randomUUID().toString(), "123", "Product", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE);
+        var product = new ProductValue(UUID.randomUUID().toString(), "123", "Product", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE, new Date(), new Date());
 
-        when(productRepository.getProductById(eq(product.getId()))).thenReturn(Optional.of(product));
+        when(productRepository.getProductById(eq(product.id()))).thenReturn(Optional.of(product));
 
-        assertThatThrownBy(() -> store.sellProduct(product.getId()))
+        assertThatThrownBy(() -> store.sellProduct(product.id()))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage(String.format("Product %s has already been sold.", product.getId()));
+                .hasMessage(String.format("Product %s has already been sold.", product.id()));
     }
 
     @Test
