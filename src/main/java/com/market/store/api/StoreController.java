@@ -4,6 +4,7 @@ import com.market.core.domain.search.PageSearch;
 import com.market.store.api.dto.CountDTO;
 import com.market.store.api.dto.ProductDTO;
 import com.market.store.domain.Store;
+import com.market.store.domain.value.ProductValue;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -23,30 +24,30 @@ public class StoreController {
 
     @ApiOperation(value = "Save Product", produces = MediaType.APPLICATION_JSON_VALUE)
     @PostMapping("/products")
-    public ResponseEntity<ProductDTO> addProduct(@Valid @RequestBody ProductDTO productDTO) {
+    public ResponseEntity<ProductValue> addProduct(@Valid @RequestBody ProductDTO product) {
 
-        var storedProduct = store.addProduct(productDTO.toEntity());
+        var storedProduct = store.addProduct(product.toDomainValue());
 
-        return ResponseEntity.ok(ProductDTO.from(storedProduct));
+        return ResponseEntity.ok(storedProduct);
     }
 
     @ApiOperation(value = "Search Product", produces = MediaType.APPLICATION_JSON_VALUE)
     @PostMapping("/products/search")
-    public ResponseEntity<List<ProductDTO>> getProduct(@RequestBody(required = false) PageSearch search) {
+    public ResponseEntity<List<ProductValue>> getProduct(@RequestBody(required = false) PageSearch search) {
         if (Objects.isNull(search))
             search = new PageSearch();
 
-        var products = store.findProducts(search).stream().map(ProductDTO::from).toList();
+        var products = store.findProducts(search).stream().toList();
 
         return ResponseEntity.ok(products);
     }
 
     @ApiOperation(value = "Sell Product", produces = MediaType.APPLICATION_JSON_VALUE)
     @PostMapping("/products/{id}/sell")
-    public ResponseEntity<ProductDTO> sellProduct(@PathVariable("id") String productId) {
+    public ResponseEntity<ProductValue> sellProduct(@PathVariable("id") String productId) {
         var productSold = store.sellProduct(productId);
 
-        return ResponseEntity.ok(ProductDTO.from(productSold));
+        return ResponseEntity.ok(productSold);
     }
 
     @ApiOperation(value = "Count of Products on store", produces = MediaType.APPLICATION_JSON_VALUE)

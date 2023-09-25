@@ -5,9 +5,9 @@ import com.market.core.domain.EntityNotFoundException;
 import com.market.core.domain.search.FieldSearch;
 import com.market.core.domain.search.PageSearch;
 import com.market.store.api.dto.CountDTO;
-import com.market.store.api.dto.ProductDTO;
 import com.market.store.domain.Product;
 import com.market.store.domain.Store;
+import com.market.store.domain.value.ProductValue;
 import com.market.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import static com.market.util.JsonUtil.getJsonValueOf;
@@ -44,35 +45,35 @@ class StoreControllerTest {
 
     @Test
     void whenPOSTaddProductThen200() throws Exception {
-        var productDTO = new ProductDTO("id123", "serial123", "name123", "type1", Collections.singleton("red"), 16.54, Boolean.FALSE);
+        var productVl = new ProductValue("id123", "serial123", "name123", "type1", Collections.singleton("red"), 16.54, Boolean.FALSE, new Date(), new Date());
 
-        when(store.addProduct(any(Product.class))).thenReturn(productDTO.toEntity());
+        when(store.addProduct(any(ProductValue.class))).thenReturn(productVl);
 
         mvc.perform(post("/v1/store/products")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(getJsonValueOf(productDTO)))
+                        .content(getJsonValueOf(productVl)))
                 .andExpect(status().isOk());
 
         verify(store, times(1))
                 .addProduct(argThat(product ->
-                        product.getId().equals("id123")
-                                && product.getSerial().equals("serial123")
-                                && product.getName().equals("name123")
-                                && product.getType().equals("type1")
-                                && product.getTags().size() == 1 && product.getTags().contains("red")
-                                && product.getPrice() == 16.54
+                        product.id().equals("id123")
+                                && product.serial().equals("serial123")
+                                && product.name().equals("name123")
+                                && product.type().equals("type1")
+                                && product.tags().size() == 1 && product.tags().contains("red")
+                                && product.price() == 16.54
                 ));
     }
 
     @Test
     void whenPOSTaddProductWithProductNoSerialThen400AndSerialMsg() throws Exception {
-        var productDTO = new ProductDTO("id123", "", "name123", "type1", Collections.singleton("red"), 16.54, Boolean.FALSE);
+        var productVl = new ProductValue("id123", "", "name123", "type1", Collections.singleton("red"), 16.54, Boolean.FALSE, new Date(), new Date());
 
-        when(store.addProduct(any(Product.class))).thenReturn(productDTO.toEntity());
+        when(store.addProduct(any(ProductValue.class))).thenReturn(productVl);
 
         var responseContent = mvc.perform(post("/v1/store/products")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(getJsonValueOf(productDTO)))
+                        .content(getJsonValueOf(productVl)))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
 
@@ -85,13 +86,13 @@ class StoreControllerTest {
 
     @Test
     void whenPOSTaddProductWithProductNoSerialThen400AndNameMsg() throws Exception {
-        var productDTO = new ProductDTO("id123", "serial123", "", "type1", Collections.singleton("red"), 16.54, Boolean.FALSE);
+        var productVl = new ProductValue("id123", "serial123", "", "type1", Collections.singleton("red"), 16.54, Boolean.FALSE, new Date(), new Date());
 
-        when(store.addProduct(any(Product.class))).thenReturn(productDTO.toEntity());
+        when(store.addProduct(any(ProductValue.class))).thenReturn(productVl);
 
         var responseContent = mvc.perform(post("/v1/store/products")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(getJsonValueOf(productDTO)))
+                        .content(getJsonValueOf(productVl)))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
 
@@ -104,13 +105,13 @@ class StoreControllerTest {
 
     @Test
     void whenPOSTaddProductWithProductNoSerialThen400AndSerialNameMsg() throws Exception {
-        var productDTO = new ProductDTO("id123", "", "", "type1", Collections.singleton("red"), 16.54, Boolean.FALSE);
+        var productVl = new ProductValue("id123", "", "", "type1", Collections.singleton("red"), 16.54, Boolean.FALSE, new Date(), new Date());
 
-        when(store.addProduct(any(Product.class))).thenReturn(productDTO.toEntity());
+        when(store.addProduct(any(ProductValue.class))).thenReturn(productVl);
 
         var responseContent = mvc.perform(post("/v1/store/products")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(getJsonValueOf(productDTO)))
+                        .content(getJsonValueOf(productVl)))
                 .andExpect(status().isBadRequest())
                 .andReturn().getResponse().getContentAsString();
 
@@ -172,10 +173,9 @@ class StoreControllerTest {
 
     @Test
     void whenPOSTSellProductThen200() throws Exception {
-        var productDTO = new ProductDTO("id123", "", "", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE);
-        var productSold = productDTO.toEntity();
+        var productVl = new ProductValue("id123", "", "", "type1", Collections.singleton("red"), 16.54, Boolean.TRUE, new Date(), new Date());
 
-        when(store.sellProduct(anyString())).thenReturn(productSold);
+        when(store.sellProduct(anyString())).thenReturn(productVl);
 
         mvc.perform(post("/v1/store/products/id123/sell")
                         .contentType(MediaType.APPLICATION_JSON))
