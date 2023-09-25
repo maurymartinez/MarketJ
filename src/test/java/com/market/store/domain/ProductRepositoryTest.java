@@ -2,6 +2,7 @@ package com.market.store.domain;
 
 import com.market.core.domain.search.FieldSearch;
 import com.market.core.domain.search.PageSearch;
+import com.market.store.domain.value.ProductValue;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -13,10 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
@@ -273,7 +271,7 @@ public class ProductRepositoryTest {
         var fields = repository.findAll(pageSearch);
 
         assertThat(fields).hasSize(45);
-        assertThat(fields.stream().map(Product::getName)).isSortedAccordingTo(Comparator.naturalOrder());
+        assertThat(fields.stream().map(ProductValue::name)).isSortedAccordingTo(Comparator.naturalOrder());
     }
 
     @Test
@@ -289,7 +287,7 @@ public class ProductRepositoryTest {
         var fields = repository.findAll(pageSearch);
 
         assertThat(fields).hasSize(45);
-        assertThat(fields.stream().map(Product::getName)).isSortedAccordingTo(Comparator.reverseOrder());
+        assertThat(fields.stream().map(ProductValue::name)).isSortedAccordingTo(Comparator.reverseOrder());
     }
 
     @Test
@@ -303,7 +301,7 @@ public class ProductRepositoryTest {
         var fields = repository.findAll(pageSearch);
 
         assertThat(fields).hasSize(45);
-        assertThat(fields.stream().map(Product::getType)).isSortedAccordingTo(Comparator.naturalOrder());
+        assertThat(fields.stream().map(ProductValue::type)).isSortedAccordingTo(Comparator.naturalOrder());
     }
 
     @Test
@@ -319,7 +317,7 @@ public class ProductRepositoryTest {
         var fields = repository.findAll(pageSearch);
 
         assertThat(fields).hasSize(45);
-        assertThat(fields.stream().map(Product::getType)).isSortedAccordingTo(Comparator.reverseOrder());
+        assertThat(fields.stream().map(ProductValue::type)).isSortedAccordingTo(Comparator.reverseOrder());
     }
 
     @Test
@@ -333,7 +331,7 @@ public class ProductRepositoryTest {
         var fields = repository.findAll(pageSearch);
 
         assertThat(fields).hasSize(45);
-        assertThat(fields.stream().map(Product::getPrice)).isSortedAccordingTo(Comparator.naturalOrder());
+        assertThat(fields.stream().map(ProductValue::price)).isSortedAccordingTo(Comparator.naturalOrder());
     }
 
     @Test
@@ -349,7 +347,7 @@ public class ProductRepositoryTest {
         var fields = repository.findAll(pageSearch);
 
         assertThat(fields).hasSize(45);
-        assertThat(fields.stream().map(Product::getPrice)).isSortedAccordingTo(Comparator.reverseOrder());
+        assertThat(fields.stream().map(ProductValue::price)).isSortedAccordingTo(Comparator.reverseOrder());
     }
 
     @Test
@@ -363,7 +361,7 @@ public class ProductRepositoryTest {
         var fields = repository.findAll(pageSearch);
 
         assertThat(fields).hasSize(45);
-        assertThat(fields.stream().map(Product::isSold)).isSortedAccordingTo(Comparator.naturalOrder());
+        assertThat(fields.stream().map(ProductValue::sold)).isSortedAccordingTo(Comparator.naturalOrder());
     }
 
     @Test
@@ -379,7 +377,7 @@ public class ProductRepositoryTest {
         var fields = repository.findAll(pageSearch);
 
         assertThat(fields).hasSize(45);
-        assertThat(fields.stream().map(Product::isSold)).isSortedAccordingTo(Comparator.reverseOrder());
+        assertThat(fields.stream().map(ProductValue::sold)).isSortedAccordingTo(Comparator.reverseOrder());
     }
 
     @Test
@@ -387,7 +385,7 @@ public class ProductRepositoryTest {
         var product = repository.getProductById(productIds.get(0));
 
         assertThat(product).isNotEmpty();
-        assertThat(product.get().getId()).isEqualTo(productIds.get(0));
+        assertThat(product.get().id()).isEqualTo(productIds.get(0));
     }
 
     @Test
@@ -418,9 +416,9 @@ public class ProductRepositoryTest {
         };
 
         IntStream.range(1, amount + 1)
-                .mapToObj(i -> new Product(UUID.randomUUID().toString(), "name" + i, "type" + i % 5, tagsGenerator.apply(i), 23.0 + i % 5, i % 2 == 0))
+                .mapToObj(i -> new ProductValue(null, UUID.randomUUID().toString(), "name" + i, "type" + i % 5, tagsGenerator.apply(i), 23.0 + i % 5, i % 2 == 0, new Date(), new Date()))
                 .map(repository::saveOrUpdate)
-                .map(Product::getId)
+                .map(ProductValue::id)
                 .forEach(productIds::add);
     }
 

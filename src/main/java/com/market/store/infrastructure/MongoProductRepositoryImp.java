@@ -1,8 +1,8 @@
 package com.market.store.infrastructure;
 
 import com.market.core.domain.search.PageSearch;
-import com.market.store.domain.Product;
 import com.market.store.domain.ProductRepository;
+import com.market.store.domain.value.ProductValue;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -25,7 +25,7 @@ public class MongoProductRepositoryImp extends AdvanceSearch implements ProductR
     private final MongoProductRepository mongoProductRepository;
 
     @Override
-    public Product saveOrUpdate(Product product) {
+    public ProductValue saveOrUpdate(ProductValue product) {
         var dbEntity = DBProductEntity.from(product);
 
         if (Objects.isNull(dbEntity.getCreationDate()))
@@ -34,20 +34,20 @@ public class MongoProductRepositoryImp extends AdvanceSearch implements ProductR
 
         var savedProduct = mongoProductRepository.save(dbEntity);
 
-        return savedProduct.toDomain();
+        return savedProduct.toDomainValue();
     }
 
     @Override
-    public Optional<Product> getProductById(String productId) {
-        return this.mongoProductRepository.findById(productId).map(DBProductEntity::toDomain);
+    public Optional<ProductValue> getProductById(String productId) {
+        return this.mongoProductRepository.findById(productId).map(DBProductEntity::toDomainValue);
     }
 
     @Override
-    public Collection<Product> findAll(PageSearch search) {
+    public Collection<ProductValue> findAll(PageSearch search) {
         var operations = buildQuery(search);
 
         return mongoOperations.aggregate(newAggregation(operations), DBProductEntity.class, DBProductEntity.class).getMappedResults()
-                .stream().map(DBProductEntity::toDomain)
+                .stream().map(DBProductEntity::toDomainValue)
                 .collect(Collectors.toList());
     }
 
