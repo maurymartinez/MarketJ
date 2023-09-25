@@ -17,9 +17,9 @@ class DBProductEntityTest {
     void toDomain() {
         var dbProduct = ClassUtil.generator.nextObject(DBProductEntity.class);
 
-        var product = dbProduct.toDomain();
+        var product = dbProduct.toDomainValue();
 
-        assertThat(dbProduct.getCreationDate()).isEqualTo(product.getCreationDate());
+        assertThat(dbProduct.getCreationDate()).isEqualTo(product.creationDate());
     }
 
     @ParameterizedTest

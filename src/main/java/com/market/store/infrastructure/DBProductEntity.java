@@ -2,6 +2,7 @@ package com.market.store.infrastructure;
 
 import com.market.core.domain.BaseInformation;
 import com.market.store.domain.Product;
+import com.market.store.domain.value.ProductValue;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,17 +18,17 @@ import java.util.List;
 @Builder
 class DBProductEntity {
 
-    public static DBProductEntity from(Product product) {
+    public static DBProductEntity from(ProductValue product) {
         return DBProductEntity.builder()
-                .id(product.getId())
-                .serial(product.getSerial())
-                .name(product.getName())
-                .type(product.getType())
-                .tags(List.copyOf(product.getTags()))
-                .price(product.getPrice())
-                .sold(product.isSold())
-                .creationDate(product.getCreationDate())
-                .lastChange(product.getLastChange())
+                .id(product.id())
+                .serial(product.serial())
+                .name(product.name())
+                .type(product.type())
+                .tags(List.copyOf(product.tags()))
+                .price(product.price())
+                .sold(product.sold())
+                .creationDate(product.creationDate())
+                .lastChange(product.lastModification())
                 .build();
     }
 
@@ -44,22 +45,8 @@ class DBProductEntity {
     private Date creationDate;
     private Date lastChange;
 
-    public Product toDomain() {
-        var product = new Product(id, serial, name, type, List.copyOf(tags), price, sold);
-        setCreationDateToDomain(product);
-        product.setLastChange(lastChange);
-        return product;
-    }
-
-    private void setCreationDateToDomain(BaseInformation product) {
-        try {
-            var field = product.getClass().getSuperclass().getSuperclass()
-                    .getDeclaredField("creationDate");
-            field.setAccessible(Boolean.TRUE);
-            field.set(product, creationDate);
-            field.setAccessible(Boolean.FALSE);
-        } catch (Exception ignored) {
-        }
+    public ProductValue toDomainValue() {
+        return new ProductValue(id, serial, name, type, List.copyOf(tags), price, sold, creationDate, lastChange);
     }
 
 }
