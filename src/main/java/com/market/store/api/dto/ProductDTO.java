@@ -1,6 +1,6 @@
 package com.market.store.api.dto;
 
-import com.market.store.domain.Product;
+import com.market.store.domain.value.ProductValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,20 +12,6 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductDTO {
-
-    public static ProductDTO from(Product product) {
-        var productDTO = new ProductDTO();
-
-        productDTO.setId(product.getId());
-        productDTO.setName(product.getName());
-        productDTO.setSerial(product.getSerial());
-        productDTO.setType(product.getType());
-        productDTO.setTags(product.getTags());
-        productDTO.setPrice(product.getPrice());
-        productDTO.setSold(product.isSold());
-
-        return productDTO;
-    }
 
     private String id;
     @NotBlank(message = "Product Serial cant be empty.")
@@ -39,8 +25,8 @@ public class ProductDTO {
 
     private boolean sold;
 
-    public Product toEntity() {
-        return new Product(id, serial, name, type, tags, price, sold);
+    public ProductValue toDomainValue() {
+        return new ProductValue(id, serial, name, type, tags, price, sold, null, null);
 
     }
 }
