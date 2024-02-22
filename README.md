@@ -57,7 +57,7 @@ To start the web application, issue the following Maven command on a shell to ge
 
     > mvn clean package
 
-and from the console run java -jar /path/to/.rar`
+and from the console run java -jar /path/to/.rar
 
 ### Or
 
